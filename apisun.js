@@ -1,79 +1,53 @@
-const http = require("http");
+const express = require("express");
+const axios = require("axios");
+const cors = require("cors");
 
-const API_TX = "https://lc79hux.hacksieucap.pro/lc79hudd";
-const API_MD5 = "https://lc79md5x.hacksieucap.pro/lc79md5_det";
+const app = express();
+app.use(cors());
 
-// ===== HÀM CHUẨN HOÁ DATA =====
-function normalize(data) {
-  return {
-    // ===== META =====
-    id: "@tiendataox",
+const PORT = process.env.PORT || 3000;
+const SOURCE_API = "https://api789hix.hacksieucap.pro/taixiuv3";
 
-    // ===== PHIÊN =====
-    phien_hien_tai: data.phiendudoan,
-    phien: data.Phien,
+/*
+  LOGIC:
+  - phien       : phiên vừa xong
+  - phien_dudoan: PHIÊN ĐANG ĐÁNH
+*/
 
-    // ===== KẾT QUẢ =====
-    ket_qua: data.Ket_qua,
-    tong: data.Tong,
-
-    // ===== XÚC XẮC =====
-    xuc_xac_1: data.Xuc_xac_1,
-    xuc_xac_2: data.Xuc_xac_2,
-    xuc_xac_3: data.Xuc_xac_3,
-
-    // ===== DỰ ĐOÁN =====
-    du_doan: data.du_doan,
-    ty_le_du_doan: data.ty_le_dd,
-
-    // ===== CẦU =====
-    dang_cau: data.dang_cau,
-
-    // ===== PHÂN TÍCH =====
-    phan_tich: data.analysis_summary || null,
-
-    // ===== PATTERN =====
-    pattern: data.pattern
-  };
-}
-
-// ===== GỌI API =====
-async function fetchAPI(url) {
-  const res = await fetch(url);
-  const data = await res.json();
-  return normalize(data);
-}
-
-// ===== SERVER =====
-const server = http.createServer(async (req, res) => {
+app.get("/api/789", async (req, res) => {
   try {
-    let data = null;
+    const response = await axios.get(SOURCE_API);
+    const d = response.data;
 
-    if (req.url.startsWith("/api/tx")) {
-      data = await fetchAPI(API_TX);
-    } else if (req.url.startsWith("/api/md5")) {
-      data = await fetchAPI(API_MD5);
-    } else {
-      res.writeHead(404);
-      return res.end("Not Found");
-    }
+    const data = {
+      game: "789Club",
+      phien_dang_danh: d.phien_dudoan,
+      ket_qua_gan_nhat: d.ket_qua_hien_tai,
+      du_doan: d.du_doan_van_sau,
+      do_tin_cay: d.do_tin_cay,
+      ty_le_thanh_cong: d.ty_le_thanh_cong,
+      chien_thuat: d.chien_thuat,
+      giai_thich: d.giai_thich,
+      loai_cau: d.loai_cau,
+      he_thong: d.phan_tich_chi_tiet?.he_thong,
+      phien_truoc: d.phien,
+      id: d.id,
+      time: new Date().toISOString()
+    };
 
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
+    res.json({
+      status: "success",
+      data
     });
-    res.end(JSON.stringify(data, null, 2));
+
   } catch (err) {
-    res.writeHead(500);
-    res.end(JSON.stringify({ error: err.toString() }));
+    res.status(500).json({
+      status: "error",
+      message: err.message
+    });
   }
 });
 
-// ===== START =====
-const PORT = 3000;
-server.listen(PORT, () => {
-  console.log("✅ API chạy:");
-  console.log("👉 /api/tx   (bàn thường)");
-  console.log("👉 /api/md5  (bàn md5)");
-});5)");
+app.listen(PORT, () => {
+  console.log(`✅ API 789 đang chạy tại http://localhost:${PORT}/api/789`);
 });
