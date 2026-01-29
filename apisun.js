@@ -21,7 +21,7 @@ app.get("/api/789", async (req, res) => {
 
     const data = {
       game: "789Club",
-      phien_dang_danh: d.phien_dudoan,
+      phien_hien_tai: d.phien_dudoan,
       ket_qua_gan_nhat: d.ket_qua_hien_tai,
       du_doan: d.du_doan_van_sau,
       do_tin_cay: d.do_tin_cay,
@@ -30,8 +30,8 @@ app.get("/api/789", async (req, res) => {
       giai_thich: d.giai_thich,
       loai_cau: d.loai_cau,
       he_thong: d.phan_tich_chi_tiet?.he_thong,
-      phien_truoc: d.phien,
-      id: d.id,
+      phien: d.phien,
+      id: "tiendat",
       time: new Date().toISOString()
     };
 
